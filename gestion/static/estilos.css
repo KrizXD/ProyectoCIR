@@ -1,0 +1,86 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('{% static "gestion/fondo.jpg" %}');
+    background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #ffffff; /* Color de texto */
+}
+
+/* Contenedor principal del formulario */
+form {
+    background: rgba(63, 72, 92, 0.8); /* Fondo color secundario semi-transparente */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 350px;
+    text-align: center; /* Alinea el contenido del formulario al centro */
+}
+
+/* Título */
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #00d084; /* Color principal */
+    text-align: center; /* Centra el título */
+}
+
+/* Estilo para los campos de texto y contraseña */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid #00d084; /* Color principal */
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #00d084; /* Color principal */
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(0, 208, 132, 0.4); /* Sombra con color principal */
+}
+
+/* Estilo para el botón */
+button {
+    background-color: #00d084; /* Color principal */
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background-color: #3f485c; /* Color secundario para hover */
+    transform: scale(1.02);
+}
+
+/* Enlace para volver al home */
+a {
+    display: block;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #00d084; /* Color principal */
+    text-decoration: none;
+    transition: color 0.3s;
+    text-align: center; /* Centra el enlace */
+}
+
+a:hover {
+    color: #3f485c; /* Color secundario en hover */
+}

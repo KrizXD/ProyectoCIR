@@ -1,0 +1,102 @@
+/* editar.css */
+
+/* Estilo global */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #525c71; /* Fondo de la página */
+    color: #ffffff; /* Color de texto principal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Contenedor principal */
+.container {
+    width: 100%;
+    max-width: 500px;
+    background-color: #3f485c; /* Fondo del formulario */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Título */
+h1 {
+    font-size: 24px;
+    color: #00d084; /* Color principal */
+    margin-bottom: 20px;
+}
+
+/* Estilo del formulario */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form p {
+    margin: 0;
+    text-align: left;
+}
+
+form label {
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+form input[type="text"],
+form input[type="file"],
+form select,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #00d084; /* Color principal */
+    border-radius: 5px;
+    background-color: #3f485c; /* Fondo del campo */
+    color: #ffffff; /* Color de texto */
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+form input[type="text"]::placeholder {
+    color: #b3b3b3;
+}
+
+/* Botón de guardar cambios */
+button[type="submit"] {
+    background-color: #00d084; /* Color principal */
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: #37b075; /* Tono más oscuro */
+}
+
+/* Enlace de regreso al Home */
+.volver-home {
+    margin-top: 15px;
+}
+
+.volver-home a {
+    color: #00d084; /* Color principal */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.volver-home a:hover {
+    color: #37b075; /* Tono más oscuro */
+}

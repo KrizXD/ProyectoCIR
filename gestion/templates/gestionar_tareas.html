@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestionar Tareas de Mesones</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'gestionar_tareas.css' %}" />
+    <style>
+      body {
+          background-image: url("{% static '/fondo.jpg' %}");
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+      }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <button class="btn-volver" onclick="window.location.href='{% url 'home' %}'">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+        <h1>Gestionar Tareas de Mesones</h1>
+        <p class="info-text">
+          Seleccione una tarea para agregar a los mesones. Puede quitar una tarea haciendo clic en el botón <strong>Quitar</strong> junto a la tarea.
+        </p>
+      </div>
+
+      <!-- Sección para los mesones de la mañana -->
+      <section class="mesones-section">
+        <h2>Mesones - Mañana</h2>
+        <div class="mesones-grid">
+          {% for mesa in mesas %} 
+            {% if mesa.horario == 'M' %}
+              <div class="mesa-container morning">
+                <h3>Mesa {{ mesa.numero }}</h3>
+
+                <!-- Mostrar lista de tareas actuales -->
+                <div class="tareas-lista">
+                  <h4>Tareas Actuales</h4>
+                  <ul>
+                    {% for tarea in mesa.tareas.all %}
+                      <li>
+                        <span>{{ tarea.nombre }} ({{ tarea.get_campaña_display }})</span>
+                        <form method="POST" class="form-quitar-tarea">
+                          {% csrf_token %}
+                          <input type="hidden" name="mesa_id" value="{{ mesa.id }}" />
+                          <input type="hidden" name="tarea_id" value="{{ tarea.id }}" />
+                          <button type="submit" name="quitar_tarea" class="btn-quitar">
+                            <i class="fas fa-times-circle"></i> Quitar
+                          </button>
+                        </form>
+                      </li>
+                    {% empty %}
+                      <li class="no-tareas">No hay tareas asignadas</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+
+                <!-- Formulario para agregar nueva tarea -->
+                <div class="form-agregar-container">
+                  <h4>Agregar nueva tarea</h4>
+                  <form method="POST" class="form-agregar-tarea">
+                    {% csrf_token %}
+                    <input type="hidden" name="mesa_id" value="{{ mesa.id }}" />
+                    <select name="tarea_id">
+                      {% for tarea in todas_las_tareas %}
+                        <option value="{{ tarea.id }}">
+                          {{ tarea.nombre }} ({{ tarea.get_campaña_display }})
+                        </option>
+                      {% endfor %}
+                    </select>
+                    <button type="submit" name="agregar_tarea" class="btn-agregar">
+                      <i class="fas fa-plus-circle"></i> Agregar
+                    </button>
+                  </form>
+                </div>
+              </div>
+            {% endif %} 
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Sección para los mesones de la tarde -->
+      <section class="mesones-section">
+        <h2>Mesones - Tarde</h2>
+        <div class="mesones-grid">
+          {% for mesa in mesas %} 
+            {% if mesa.horario == 'T' %}
+              <div class="mesa-container afternoon">
+                <h3>Mesa {{ mesa.numero }}</h3>
+
+                <!-- Mostrar lista de tareas actuales -->
+                <div class="tareas-lista">
+                  <h4>Tareas Actuales</h4>
+                  <ul>
+                    {% for tarea in mesa.tareas.all %}
+                      <li>
+                        <span>{{ tarea.nombre }} ({{ tarea.get_campaña_display }})</span>
+                        <form method="POST" class="form-quitar-tarea">
+                          {% csrf_token %}
+                          <input type="hidden" name="mesa_id" value="{{ mesa.id }}" />
+                          <input type="hidden" name="tarea_id" value="{{ tarea.id }}" />
+                          <button type="submit" name="quitar_tarea" class="btn-quitar">
+                            <i class="fas fa-times-circle"></i> Quitar
+                          </button>
+                        </form>
+                      </li>
+                    {% empty %}
+                      <li class="no-tareas">No hay tareas asignadas</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+
+                <!-- Formulario para agregar nueva tarea -->
+                <div class="form-agregar-container">
+                  <h4>Agregar nueva tarea</h4>
+                  <form method="POST" class="form-agregar-tarea">
+                    {% csrf_token %}
+                    <input type="hidden" name="mesa_id" value="{{ mesa.id }}" />
+                    <select name="tarea_id">
+                      {% for tarea in todas_las_tareas %}
+                        <option value="{{ tarea.id }}">
+                          {{ tarea.nombre }} ({{ tarea.get_campaña_display }})
+                        </option>
+                      {% endfor %}
+                    </select>
+                    <button type="submit" name="agregar_tarea" class="btn-agregar">
+                      <i class="fas fa-plus-circle"></i> Agregar
+                    </button>
+                  </form>
+                </div>
+              </div>
+            {% endif %} 
+          {% endfor %}
+        </div>
+      </section>
+    </div>
+
+    <!-- FontAwesome para los iconos -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  </body>
+</html>

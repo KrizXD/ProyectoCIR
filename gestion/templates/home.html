@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horario de Empleados</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'estilo_home.css' %}">
+    <link rel="stylesheet" href="{% static 'confirmacion.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="{% static 'drag_drop.js' %}"></script>
+    <script src="{% static 'js/confirmacion.js' %}"></script>
+    <script>
+        function cambiarFondoColor(color) {
+            let user = "{{ request.user.username }}"; 
+            document.body.style.backgroundColor = color;
+            document.body.style.backgroundImage = 'none'; 
+            localStorage.setItem('fondo_' + user, color); 
+        }
+
+        function cambiarFondoImagen(input) {
+            let user = "{{ request.user.username }}"; 
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.backgroundImage = 'url(' + e.target.result + ')';
+                    document.body.style.backgroundRepeat = 'no-repeat';
+                    document.body.style.backgroundSize = 'cover';      // Asegura que la imagen cubra toda la pantalla
+                    document.body.style.backgroundPosition = 'center';
+                    localStorage.setItem('fondo_' + user, 'url(' + e.target.result + ')');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function toggleOpcionesFondo() {
+            const opcionesFondo = document.getElementById('opciones-fondo');
+            opcionesFondo.style.display = opcionesFondo.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function mostrarDiaYFecha() {
+            const opcionesDia = { weekday: 'long' };
+            const opcionesFecha = { year: 'numeric', month: '2-digit', day: '2-digit' };
+            const hoy = new Date();
+            const diaSemana = hoy.toLocaleDateString('es-ES', opcionesDia);
+            const fechaNumerica = hoy.toLocaleDateString('es-ES', opcionesFecha);
+            document.getElementById('titulo-dia').textContent = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+            document.getElementById('fecha-completa').textContent = fechaNumerica;
+        }
+
+        window.onload = function() {
+            mostrarDiaYFecha();
+            let user = "{{ request.user.username }}"; 
+            const fondoGuardado = localStorage.getItem('fondo_' + user);
+            if (fondoGuardado) {
+                document.body.style.background = fondoGuardado;
+            } else {
+                {% if not es_fabian and not es_edgardo %}
+                document.body.style.backgroundColor = '#3f485c'; 
+                {% endif %}
+            }
+        };
+
+        function asignarJefeMesa(empleadoId, mesaId) {
+            fetch(`/asignar_jefe_mesa/${mesaId}/${empleadoId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ empleado_id: empleadoId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    console.error('Error al asignar el Jefe de Mesa:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function quitarJefeMesa(mesaId, empleadoId) {
+            fetch(`/quitar_jefe_mesa/${mesaId}/${empleadoId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ empleado_id: empleadoId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    console.error('Error al quitar el Jefe de Mesa:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    <script>
+        setInterval(function() {
+            window.location.reload();
+        }, 60000);
+    </script>
+</head>
+
+<body>
+    <div class="logo-container">
+        <a href="{% url 'login' %}">
+            <img src="{% static 'gestion/logo.png' %}" alt="Iniciar sesión">
+        </a>
+    </div>
+
+    <h1 id="titulo-dia"></h1>
+    <div id="fecha-completa" style="font-size: 1.2em; font-weight: normal;"></div>
+
+    {% if es_fabian or es_edgardo %}
+    <div class="horario-select">
+        <form method="POST">
+            {% csrf_token %}
+            <label for="horario">Seleccione horario:</label>
+            <select name="horario" onchange="this.form.submit()">
+                <option value="M" {% if horario_actual == 'M' %}selected{% endif %}>Mañana</option>
+                <option value="T" {% if horario_actual == 'T' %}selected{% endif %}>Tarde</option>
+            </select>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+    <div class="admin-buttons">
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Cerrar sesión</button>
+        </form>
+
+        <button onclick="toggleOpcionesFondo()">Cambiar Fondo</button>
+        <div>
+            <button onclick="mostrarConfirmacion()">Finalizar Turno</button>
+        </div>
+
+        <button onclick="window.location.href='{% url 'gestionar_todas_las_tareas' %}'">Gestionar Tareas</button>
+
+        {% if es_fabian or es_edgardo %}
+        <div>
+            <button onclick="window.location.href='{% url 'ver_registro_actividades' %}'">Ver Registro de Actividades</button>
+        </div>
+        {% endif %}
+
+        {% if es_edgardo %}
+        <div>
+            <button onclick="window.location.href='{% url 'agregar_empleado' %}'">Agregar Empleado</button>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div id="modalConfirmacion" class="modal">
+        <div class="modal-content">
+            <p>¿Estás seguro de que deseas finalizar el turno?</p>
+            <button onclick="confirmarFinalizarTurno()">Sí, finalizar</button>
+            <button onclick="cerrarConfirmacion()">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="opciones-fondo">
+        <h3>Opciones de Fondo</h3>
+        <label for="colorPicker">Seleccionar Color:</label>
+        <input type="color" id="colorPicker" onchange="cambiarFondoColor(this.value)">
+        <br><br>
+        <label for="imagePicker">Subir Imagen:</label>
+        <input type="file" id="imagePicker" accept="image/*" onchange="cambiarFondoImagen(this)">
+    </div>
+    {% endif %}
+
+    <div class="container">
+        {% if es_fabian or es_edgardo %}
+        <div class="left-panel">
+            <h3>Empleados Activos (Turno: {{ horario_actual }})</h3>
+            <div id="empleados-list" ondrop="drop(event)" ondragover="allowDrop(event)">
+                {% for empleado in empleados_activos %}
+                    <div class="empleado cuadro-blanco" id="empleado-{{ empleado.id }}" draggable="true" ondragstart="drag(event)">
+                        <img src="{% if empleado.imagen %}{{ empleado.imagen.url }}{% else %}{% static 'empleados/default.jpg' %}{% endif %}" alt="Foto de {{ empleado.nombre }}">
+                        <span>{{ empleado.nombre }} {{ empleado.apellido }}</span>
+                        <div class="acciones-empleado">
+                            <button class="icono editar" title="Editar" onclick="window.location.href='{% url 'editar_empleado' empleado.id %}'">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            {% if es_edgardo %}
+                            <form method="POST" action="{% url 'eliminar_empleado' empleado.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button class="icono eliminar" type="submit" title="Eliminar">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="right-panel">
+            {% for mesa in mesas %}
+                <div class="mesa meson-{{ mesa.numero }}" id="mesa-{{ mesa.id }}" {% if es_fabian or es_edgardo %} ondrop="drop(event)" ondragover="allowDrop(event)" {% endif %}>
+                    <h4>Mesón {{ mesa.numero }}</h4>
+                    <div id="empleados-mesa-{{ mesa.id }}" class="empleados-grid">
+                        {% for empleado in mesa.empleados.all %}
+                            {% if empleado.id != mesa.jefe_mesa.id %}
+                                <div class="{% if es_fabian or es_edgardo %}empleado cuadro-blanco{% else %}empleado-solo-foto{% endif %}" id="empleado-{{ empleado.id }}" {% if es_fabian or es_edgardo %} draggable="true" ondragstart="drag(event)" {% endif %}>
+                                    <img src="{% if empleado.imagen %}{{ empleado.imagen.url }}{% else %}{% static 'empleados/default.jpg' %}{% endif %}" alt="Foto de {{ empleado.nombre }}">
+                                    {% if es_fabian or es_edgardo %}
+                                    <span>{{ empleado.nombre }} {{ empleado.apellido }}</span>
+                                    <div class="acciones-empleado">
+                                        <button class="icono editar" title="Editar" onclick="window.location.href='{% url 'editar_empleado' empleado.id %}'">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                        <button class="icono asignar-jefe" title="Asignar Jefe" onclick="asignarJefeMesa({{ empleado.id }}, {{ mesa.id }})">
+                                            <i class="fas fa-star"></i>
+                                        </button>
+                                        {% if es_edgardo %}
+                                        <form method="POST" action="{% url 'eliminar_empleado' empleado.id %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button class="icono eliminar" type="submit" title="Eliminar">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <h5 class="jefe-mesa-titulo">Jefe de Mesa</h5>
+                    <div id="jefe-mesa-container-{{ mesa.id }}" class="jefe-mesa">
+                        {% if mesa.jefe_mesa %}
+                        <div class="{% if es_fabian or es_edgardo %}empleado cuadro-blanco{% else %}empleado-solo-foto{% endif %}" id="empleado-{{ mesa.jefe_mesa.id }}">
+                            <img src="{% if mesa.jefe_mesa.imagen %}{{ mesa.jefe_mesa.imagen.url }}{% else %}{% static 'empleados/default.jpg' %}{% endif %}" alt="Foto de {{ mesa.jefe_mesa.nombre }}">
+                            {% if es_fabian or es_edgardo %}
+                            <span>{{ mesa.jefe_mesa.nombre }} {{ mesa.jefe_mesa.apellido }}</span>
+                            <div class="acciones-empleado">
+                                <button onclick="quitarJefeMesa({{ mesa.id }}, {{ mesa.jefe_mesa.id }})">Quitar Jefe de Mesa</button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>        
+    </div>
+</body>
+</html>

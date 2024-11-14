@@ -1,0 +1,155 @@
+/* Estilo global */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #525c71; /* Color secundario */
+    color: #ffffff; /* Color de texto */
+}
+
+/* Contenedor principal */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #3f485c; /* Fondo color secundario */
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #ffffff; /* Color principal */
+    font-size: 32px;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #00d084; /* Color principal */
+    padding-bottom: 20px;
+}
+
+.mesones-section {
+    margin-bottom: 40px;
+}
+
+.mesones-section h2 {
+    color: #ffffff; /* Color de texto */
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Mesones grid */
+.mesones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Estilo de los contenedores de mesones */
+.mesa-container {
+    border: 1px solid #00d084; /* Color principal */
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #3f485c; /* Color secundario */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+
+
+.mesa-container h3 {
+    font-size: 24px;
+    color: #ffffff; /* Color de texto */
+    margin-bottom: 15px;
+}
+
+/* Lista de tareas */
+.tareas-lista h4 {
+    font-size: 20px;
+    color: #ffffff; /* Color de texto */
+    margin-bottom: 15px;
+}
+
+.tareas-lista ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.tareas-lista ul li {
+    background-color: #3f485c; /* Color secundario */
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff; /* Color de texto */
+}
+
+.no-tareas {
+    color: #999;
+}
+
+/* Botones */
+.btn-quitar {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-quitar:hover {
+    background-color: #c0392b;
+}
+
+.form-agregar-container {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #00d084; /* Color principal */
+}
+
+.form-agregar-tarea select {
+    width: 70%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #00d084; /* Color principal */
+    background-color: #3f485c; /* Color secundario */
+    color: #ffffff; /* Color de texto */
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.btn-agregar {
+    background-color: #00d084; /* Color principal */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-agregar:hover {
+    background-color: #3f485c; /* Color secundario */
+}
+
+/* Botones con iconos */
+button i {
+    margin-right: 5px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+
+    .mesones-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-agregar-tarea select {
+        width: 100%;
+    }
+}

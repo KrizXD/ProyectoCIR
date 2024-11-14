@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'estilos.css' %}" />
+    <style>
+        body {
+            background-image: url("{% static '/fondo.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    <form method="post">
+        <h1>Iniciar Sesión</h1>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Ingresar</button>
+        <a href="{% url 'home' %}">Volver a Home</a>
+    </form>
+</body>
+</html>

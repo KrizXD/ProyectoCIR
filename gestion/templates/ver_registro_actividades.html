@@ -1,0 +1,83 @@
+<h1>Registro de Actividades</h1>
+{% load static %}
+<link rel="stylesheet" href="{% static 'actividades.css' %}">
+
+<!-- Botón de regreso al perfil estilizado -->
+{% if request.user.is_authenticated %}
+    <button onclick="window.location.href='{% url 'home' %}'">Volver</button>
+{% endif %}
+
+<form method="GET">
+    <input type="text" name="q" placeholder="Buscar usuario o descripción" value="{{ query }}">
+    <input type="date" name="fecha_inicio" value="{{ fecha_inicio|date:'Y-m-d' }}">
+    <input type="date" name="fecha_fin" value="{{ fecha_fin|date:'Y-m-d' }}">
+
+    <!-- Filtro de turnos -->
+    <select name="turno">
+        <option value="">Todos los turnos</option>
+        <option value="M" {% if turno == 'M' %}selected{% endif %}>Mañana</option>
+        <option value="T" {% if turno == 'T' %}selected{% endif %}>Tarde</option>
+    </select>
+
+    <button type="submit">Buscar</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Usuario</th>
+            <th>Descripción</th>
+            <th>Turno</th>
+            <th>Fecha</th>
+            <th>Descargar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for registro in page_obj %}
+        <tr>
+            <td>{{ registro.usuario.username }}</td>
+            <td>
+                {% autoescape off %}
+                    {{ registro.descripcion|linebreaksbr }}
+                {% endautoescape %}
+            </td>
+            <td>{{ registro.get_turno_display }}</td>
+            <td>{{ registro.fecha }}</td>
+            <td>
+                <button onclick="window.location.href='{% url 'descargar_registro_puestos' registro.id %}'">Descargar</button>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No se encontraron registros de actividades.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Bloque de paginación -->
+<div class="pagination">
+    <span class="page-info">
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+    </span>
+
+    <div class="page-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if query %}&q={{ query }}{% endif %}{% if turno %}&turno={{ turno }}{% endif %}{% if fecha_inicio %}&fecha_inicio={{ fecha_inicio }}{% endif %}{% if fecha_fin %}&fecha_fin={{ fecha_fin }}{% endif %}">Primera</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if turno %}&turno={{ turno }}{% endif %}{% if fecha_inicio %}&fecha_inicio={{ fecha_inicio }}{% endif %}{% if fecha_fin %}&fecha_fin={{ fecha_fin }}{% endif %}">Anterior</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="current-page">{{ num }}</span>
+            {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if turno %}&turno={{ turno }}{% endif %}{% if fecha_inicio %}&fecha_inicio={{ fecha_inicio }}{% endif %}{% if fecha_fin %}&fecha_fin={{ fecha_fin }}{% endif %}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if turno %}&turno={{ turno }}{% endif %}{% if fecha_inicio %}&fecha_inicio={{ fecha_inicio }}{% endif %}{% if fecha_fin %}&fecha_fin={{ fecha_fin }}{% endif %}">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if turno %}&turno={{ turno }}{% endif %}{% if fecha_inicio %}&fecha_inicio={{ fecha_inicio }}{% endif %}{% if fecha_fin %}&fecha_fin={{ fecha_fin }}{% endif %}">Última</a>
+        {% endif %}
+    </div>
+</div>

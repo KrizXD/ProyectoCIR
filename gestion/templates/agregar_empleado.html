@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Nuevo Empleado</title>
+    {% load static %}
+    <style>
+        body {
+            background-image: url("{% static '/fondo.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>    
+    <link rel="stylesheet" href="{% static 'gestion_empleados.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>Registrar Nuevo Empleado</h1>
+                <p class="subtitle">Complete la información para añadir un nuevo empleado</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="form-empleado">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-agregar">Añadir Empleado</button>
+            </form>
+
+            <a href="{% url 'home' %}" class="btn-volver">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
+    </div>
+
+    <!-- Incluye FontAwesome para iconos -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
